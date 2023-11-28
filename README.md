@@ -1,2 +1,2 @@
-<h1 align="center">Привет<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1> 
-<h3 align="center">Чтобы начать пользоваться проектом, нужно установить библиотеки:</h3>
+<h1 align="center">Привет<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif"/></h1> 
+<h3>🛠️Начало работы</h3>
