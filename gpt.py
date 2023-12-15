@@ -1,6 +1,22 @@
 import g4f
+from settings import settings
+from openai import OpenAI
 
-def gpt3(prompt:str):
+client = OpenAI(api_key=settings['Open_key'])
+
+
+def gpt(prompt: str):
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo-1106",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return completion.choices[0].message.content
+
+
+def gpt3_free(prompt: str):
     '''
     Функиция обрабатывает запрос с помощью свободного сервера "GPT 3.5-turbo".
     
@@ -24,12 +40,12 @@ def gpt3(prompt:str):
         for message in response:
             result += message
         return result
-    
+
     except RuntimeError:
         return 'Сервер не отвечает'
 
 
-def gpt4(prompt:str):
+def gpt4_free(prompt: str):
     '''
     Функиция обрабатывает запрос с помощью свободного сервера "GPT 4".
     
@@ -44,8 +60,8 @@ def gpt4(prompt:str):
     '''
     try:
         response = g4f.ChatCompletion.create(
-        model=g4f.models.gpt_4,
-        messages=[{"role": "user", "content": prompt}],
+            model=g4f.models.gpt_4,
+            messages=[{"role": "user", "content": prompt}],
         )
 
         return response
