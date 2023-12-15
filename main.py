@@ -1,8 +1,9 @@
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup
 from settings import settings
-from gpt import gpt, gpt4_free, gpt3_free
+from gpt import gpt4_free
 import textwrap
+
 
 token = settings['Token']
 bot=telebot.TeleBot(token)
@@ -78,15 +79,17 @@ def extra_step(message):
     extra = message.text
     schedule = schedule_dict[chat_id]
     schedule.extra = extra
-    result = gpt3_free(textwrap.dedent(f'''\
+    result = gpt4_free(textwrap.dedent(f'''\
                             Помоги мне сделать расписание для студента. В расписании у меня есть {schedule.subject}. 
                             Очень важно чтобы количество предметов в день в расписании не должно превышать {schedule.count}. 
                             Учебный день должен начинаться с {schedule.time}. Перерыв между предметами должен быть 15 минут. 
                             Один предмет идет полтора часа. {schedule.extra}. 
-                            Предметы в расписании не должны повторяться. Мне нужно только расписание без рекомендаций.
+                            Предметы в расписании не должны повторяться. 
+                            Мне нужно только расписание без рекомендаций.
                             Расписание должно быть составлено на русском языке.
                             '''))
     bot.send_message(message.chat.id, result)
 
-    
-bot.infinity_polling()
+
+if __name__ == "__main__":   
+    bot.infinity_polling()
