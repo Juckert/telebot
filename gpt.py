@@ -64,7 +64,22 @@ def gpt4_free(prompt: str):
             messages=[{"role": "user", "content": prompt}],
         )
 
+        print('gpt_4')
         return response
-
+        
     except RuntimeError:
+        response = g4f.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            stream=True,
+        )
+
+        result = ''
+        for message in response:
+            result += message
+
+        print('gpt_3')
+        return result        
+    
+    except: 
         return 'Сервер не отвечает'
