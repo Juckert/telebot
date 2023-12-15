@@ -1,8 +1,8 @@
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup
 from settings import settings
-from gpt import gpt4
-
+from gpt import gpt, gpt4_free, gpt3_free
+import textwrap
 
 token = settings['Token']
 bot=telebot.TeleBot(token)
@@ -56,20 +56,20 @@ def count_step(callback):
     schedule = schedule_dict[chat_id]
     schedule.count = count
     keyboard_time = InlineKeyboardMarkup(row_width=1)
-    batton_time_1 = InlineKeyboardButton(text='8:30', callback_data='Утром')
-    batton_time_2 = InlineKeyboardButton(text='14:15', callback_data='Днем')
-    batton_time_3 = InlineKeyboardButton(text='16:00', callback_data='Вечером')
+    batton_time_1 = InlineKeyboardButton(text='8:30', callback_data='8:30')
+    batton_time_2 = InlineKeyboardButton(text='14:15', callback_data='14:15')
+    batton_time_3 = InlineKeyboardButton(text='16:00', callback_data='16:00')
     keyboard_time.add(batton_time_1, batton_time_2, batton_time_3)
     bot.send_message(chat_id=callback.from_user.id, text='С какого времени будет начинаться учеба?', reply_markup=keyboard_time)
 
 
-@bot.callback_query_handler(func=lambda callback: callback.data in ['Утром', 'Днем', 'Вечером'])
+@bot.callback_query_handler(func=lambda callback: callback.data in ['8:30', '14:15', '16:00'])
 def time_step(callback):
     chat_id = callback.from_user.id
     time = callback.data
     schedule = schedule_dict[chat_id]
     schedule.time = time
-    msg = bot.send_message(chat_id=callback.from_user.id, text='Расскажите подробнее что вам нужно еще учесть при создании расписания')    
+    msg = bot.send_message(chat_id=callback.from_user.id, text='Расскажите подробнее что вам нужно еще учесть при создании расписания')
     bot.register_next_step_handler(msg, extra_step)
 
 
@@ -78,8 +78,15 @@ def extra_step(message):
     extra = message.text
     schedule = schedule_dict[chat_id]
     schedule.extra = extra
-    result = gpt4(f"Помоги мне сделать расписание для студента. В расписании у меня есть {schedule.subject}. Очень важно чтобы количество предметов в день в расписании не должно превышать {schedule.count}. Учебный день должен начинаться с {schedule.time}. Перерыв между предметами должен быть 15 минут. Один предмет идет полтора часа. {schedule.extra}. Предметы в расписании не должны повторяться. Мне нужно только расписание без рекомендаций.")
+    result = gpt3_free(textwrap.dedent(f'''\
+                            Помоги мне сделать расписание для студента. В расписании у меня есть {schedule.subject}. 
+                            Очень важно чтобы количество предметов в день в расписании не должно превышать {schedule.count}. 
+                            Учебный день должен начинаться с {schedule.time}. Перерыв между предметами должен быть 15 минут. 
+                            Один предмет идет полтора часа. {schedule.extra}. 
+                            Предметы в расписании не должны повторяться. Мне нужно только расписание без рекомендаций.
+                            Расписание должно быть составлено на русском языке.
+                            '''))
     bot.send_message(message.chat.id, result)
 
-
+    
 bot.infinity_polling()
