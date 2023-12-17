@@ -47,7 +47,7 @@ def subject_step(message):
     batton_count_3 = InlineKeyboardButton(text='3', callback_data='3')
     batton_count_4 = InlineKeyboardButton(text='4', callback_data='4')    
     keyboard_count.add(batton_count_1, batton_count_2, batton_count_3, batton_count_4,)
-    bot.send_message(chat_id=message.chat.id, text='Сколько предметов в день вам комофртно изучать?', reply_markup=keyboard_count)
+    bot.send_message(chat_id=chat_id, text='Сколько предметов в день вам комофртно изучать?', reply_markup=keyboard_count)
 
 
 @bot.callback_query_handler(func=lambda callback: callback.data in ['1', '2', '3', '4']) 
@@ -61,7 +61,7 @@ def count_step(callback):
     batton_time_2 = InlineKeyboardButton(text='14:15', callback_data='14:15')
     batton_time_3 = InlineKeyboardButton(text='16:00', callback_data='16:00')
     keyboard_time.add(batton_time_1, batton_time_2, batton_time_3)
-    bot.send_message(chat_id=callback.from_user.id, text='С какого времени будет начинаться учеба?', reply_markup=keyboard_time)
+    bot.send_message(chat_id=chat_id, text='С какого времени будет начинаться учеба?', reply_markup=keyboard_time)
 
 
 @bot.callback_query_handler(func=lambda callback: callback.data in ['8:30', '14:15', '16:00'])
@@ -70,7 +70,7 @@ def time_step(callback):
     time = callback.data
     schedule = schedule_dict[chat_id]
     schedule.time = time
-    msg = bot.send_message(chat_id=callback.from_user.id, text='Расскажите подробнее что вам нужно еще учесть при создании расписания')
+    msg = bot.send_message(chat_id=chat_id, text='Расскажите подробнее что вам нужно еще учесть при создании расписания')
     bot.register_next_step_handler(msg, extra_step)
 
 
