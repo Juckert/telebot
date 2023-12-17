@@ -6,7 +6,7 @@ import textwrap
 
 
 token = settings['Token']
-bot=telebot.TeleBot(token)
+bot = telebot.TeleBot(token)
 schedule_dict = {}
 
 
