@@ -1,34 +1,19 @@
 import g4f
-from settings import settings
-from openai import OpenAI
-
-client = OpenAI(api_key=settings['Open_key'])
-
-
-def gpt(prompt: str):
-    completion = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
-
-    return completion.choices[0].message.content
 
 
 def gpt3_free(prompt: str):
-    '''
-    Функиция обрабатывает запрос с помощью свободного сервера "GPT 3.5-turbo".
-    
-    Args:
-        prompt (str): Запрос к серверу "GPT 3.5-turbo".
-    
-    Returns:
-        str: Ответ с сервера "GPT 3.5-turbo".
+    """
+    Обрабатывает запрос с помощью свободного сервера "GPT 3.5-turbo"
 
-    Extra:  
-        Если нет свободных серверов, вернут ошибку "Сервер не отвечает".
-    '''
+    Args:
+        prompt (str): Запрос к серверу "GPT 3.5-turbo"
+
+    Returns:
+        str: Ответ с сервера "GPT 3.5-turbo"
+
+    Extra:
+        Если нет свободных серверов, вернут ошибку "Сервер не отвечает"
+    """
     try:
         response = g4f.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -46,18 +31,19 @@ def gpt3_free(prompt: str):
 
 
 def gpt4_free(prompt: str):
-    '''
-    Функиция обрабатывает запрос с помощью свободного сервера "GPT 4".
-    
+    """
+    Обрабатывает запрос с помощью свободного сервера "GPT 4"
+
     Args:
-        prompt (str): Запрос к серверу "GPT 4".
-    
+        prompt (str): Запрос к серверу "GPT 4"
+
     Returns:
-        str: Ответ с сервера "GPT 4".
+        str: Ответ с сервера "GPT 4"
 
     Extra:
-        Если нет свободных серверов, вернут ошибку "Сервер не отвечает".
-    '''
+        Если нет свободных серверов, направит к модели "GPT 3"
+        При повторной ошибке вернут ошибку "Сервер не отвечает"
+    """
     try:
         response = g4f.ChatCompletion.create(
             model=g4f.models.gpt_4,
@@ -66,7 +52,7 @@ def gpt4_free(prompt: str):
 
         print('gpt_4')
         return response
-        
+
     except RuntimeError:
         response = g4f.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -78,8 +64,7 @@ def gpt4_free(prompt: str):
         for message in response:
             result += message
 
-        print('gpt_3')
-        return result        
-    
-    except: 
+        return result
+
+    except:
         return 'Сервер не отвечает'
